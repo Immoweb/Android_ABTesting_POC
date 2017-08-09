@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_notifications:
                     screenName = getString(R.string.title_notifications);
+                    int i = 5 / 0;
                     break;
             }
             FirebaseAnalytics.getInstance(MainActivity.this).setCurrentScreen(MainActivity.this, screenName, null);
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, String.valueOf(button.getText()));
                 bundle.putString("item_color", String.valueOf(buttonColor.getColor()));
                 FirebaseAnalytics.getInstance(MainActivity.this).logEvent("CheckoutClicked", bundle);
+
+                FirebaseCrash.report(new Exception("My first Android non-fatal error"));
             }
         });
 
