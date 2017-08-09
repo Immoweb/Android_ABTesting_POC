@@ -1,11 +1,12 @@
 package be.ibad.abfirebase;
 
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Button button = (Button) view;
-                ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
+                int buttonColor = button.getBackgroundTintList().getDefaultColor();
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, String.valueOf(button.getText()));
-                bundle.putString("item_color", String.valueOf(buttonColor.getColor()));
+                bundle.putString("item_color", String.valueOf(buttonColor));
                 FirebaseAnalytics.getInstance(MainActivity.this).logEvent("CheckoutClicked", bundle);
 
                 FirebaseCrash.report(new Exception("My first Android non-fatal error"));
@@ -143,11 +144,11 @@ public class MainActivity extends AppCompatActivity {
         String experiment = mFirebaseRemoteConfig.getString("experiment_variant_button");
         FirebaseAnalytics.getInstance(this).setUserProperty("Experiment_Button", experiment);
         if (experiment.equals("variant_c")) {
-            mButton.setBackgroundColor(Color.parseColor("#303F9F"));
+            mButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green)));
             mButton.setTextColor(Color.WHITE);
             mButton.setText("Buy");
         } else if (experiment.equals("variant_d")) {
-            mButton.setBackgroundColor(Color.parseColor("#388E3C"));
+            mButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
             mButton.setTextColor(Color.WHITE);
             mButton.setText("Checkout");
         }
