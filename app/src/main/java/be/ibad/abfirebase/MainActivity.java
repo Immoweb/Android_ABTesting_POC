@@ -1,10 +1,12 @@
 package be.ibad.abfirebase;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +46,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_notifications:
                     screenName = getString(R.string.title_notifications);
-                    int i = 5 / 0;
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("You want a Crash ?")
+                            .setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            int i = 5 / 0;
+                                        }
+                                    }).show();
                     break;
             }
             FirebaseAnalytics.getInstance(MainActivity.this).setCurrentScreen(MainActivity.this, screenName, null);
