@@ -21,4 +21,8 @@
         <key>experiment_variant_button</key>
         <value>no_experiment</value>
     </entry>
+    <entry>
+        <key>image_url</key>
+        <value>http://dogr.io/doge.png</value>
+    </entry>
 </defaultsMap>

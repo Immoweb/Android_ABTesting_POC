@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +20,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     };
+    private ImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 int buttonColor = button.getBackgroundTintList().getDefaultColor();
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, String.valueOf(button.getText()));
-                bundle.putString("item_color", String.valueOf(buttonColor));
+                bundle.putString("item_color", buttonColor == R.color.colorPrimary ? "ColorPrimary" : "Green");
                 FirebaseAnalytics.getInstance(MainActivity.this).logEvent("CheckoutClicked", bundle);
 
                 FirebaseCrash.report(new Exception("My first Android non-fatal error"));
@@ -97,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
         fetchWelcome();
+        circleImageView = (ImageView) findViewById(R.id.circle_img_view);
+
     }
 
     /**
@@ -135,9 +143,29 @@ public class MainActivity extends AppCompatActivity {
                         displayWelcomeMessage();
                         displayTextExperiment();
                         displayButtonExperiment();
+                        displayFetchedImage();
                     }
                 });
         // [END fetch_config_with_callback]
+    }
+
+    private void displayFetchedImage() {
+        String imageUrl = mFirebaseRemoteConfig.getString("image_url");
+        final Trace myTrace = FirebasePerformance.getInstance().newTrace("test_trace");
+        myTrace.start();
+        Picasso.with(MainActivity.this)
+                .load(imageUrl)
+                .into(circleImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        myTrace.stop();
+                    }
+
+                    @Override
+                    public void onError() {
+                        myTrace.stop();
+                    }
+                });
     }
 
     private void displayButtonExperiment() {
